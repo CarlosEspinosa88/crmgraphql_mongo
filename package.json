@@ -1,0 +1,18 @@
+{
+  "name": "crmgraphq_udemy",
+  "version": "1.0.0",
+  "description": "Udemy Course graphQl + MongoDB + Nextjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "author": "Carlos Espinosa",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^3.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
