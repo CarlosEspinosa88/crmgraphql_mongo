@@ -1,31 +1,36 @@
-const cursos = [
-  {
-      titulo: 'JavaScript Moderno Guía Definitiva Construye +10 Proyectos',
-      tecnologia: 'JavaScript ES6',
-  },
-  {
-      titulo: 'React – La Guía Completa: Hooks Context Redux MERN +15 Apps',
-      tecnologia: 'React',
-  },
-  {
-      titulo: 'Node.js – Bootcamp Desarrollo Web inc. MVC y REST API’s',
-      tecnologia: 'Node.js'
-  }, 
-  {
-      titulo: 'ReactJS Avanzado – FullStack React GraphQL y Apollo',
-      tecnologia: 'React'
-  }
-];
-
+const Usuario = require('../models/Usuarios');
+const bcryptjs = require('bcryptjs')
 
 const resolvers = {
   Query: {
-    obtenerCursos: (_, { input }) => {
-      const resultado = cursos.filter((curso) => curso.tecnologia === input.tecnologia)
+    obtenerCursos: () => 'Obtener Cursos'
+  },
+  Mutation: {
+    nuevoUsuario: async (_, { input } ) => {
+      const { email, password } = input;
+      const usuarioExiste = await Usuario.findOne({ email })
 
-      return resultado
-    },
-    obtenerTecnologia: () => cursos,
+      // Revisar si el usuario ya existe 
+      if (usuarioExiste) {
+        throw new Error(' usuario ya esta registrado')
+      }
+
+      //hash del password
+      const salt = await bcryptjs.genSaltSync(10);
+      input.password = await bcryptjs.hash(password, salt);
+
+      try {
+        // guardar el usuario en la base de datos
+        const usuarioNuevo = new Usuario(input)
+        usuarioNuevo.save() // guardado
+
+        return usuarioNuevo
+
+      } catch (error) {
+        console.log('Error de usuario', error)
+      }
+      return 
+    }
   }
 }
 

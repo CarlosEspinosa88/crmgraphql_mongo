@@ -1,18 +1,27 @@
 const { gql } = require("apollo-server")
 
 const typeDefs = gql`
-  type Curso {
-    titulo: String
+  type Usuario {
+    id: ID
+    nombre: String
+    apellido: String
+    email: String
+    creado: String
   }
-  type Tecnologia {
-    tecnologia: String
+
+  input UsuarioInput {
+    nombre: String!
+    apellido: String!
+    email: String!
+    password: String!
   }
-  input CursoInput {
-    tecnologia: String
-  }
+  
   type Query {
-    obtenerCursos(input: CursoInput!) : [Curso],
-    obtenerTecnologia: [Tecnologia]
+    obtenerCursos: String
+  }
+
+  type Mutation {
+    nuevoUsuario(input: UsuarioInput): Usuario
   }
 `
 
