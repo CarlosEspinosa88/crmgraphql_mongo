@@ -1,4 +1,5 @@
 const Usuario = require('../models/Usuarios');
+const Producto = require('../models/Producto');
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config({ path: '.variables.env' })
@@ -16,6 +17,23 @@ const resolvers = {
       const usuarioId = jwt.verify(token, process.env.SECRETA)
 
       return usuarioId
+    },
+    obtenerProductos: async () => {
+      try {
+        const productos = await Producto.find({})
+        return productos
+      } catch (error) {
+        throw new Error('Error al traer los productos', error)
+      }
+    },
+    obtenerProducto: async (_, { id }) => {
+      const producto = await Producto.findById(id)
+
+      if (!producto) {
+        throw new Error('El producto no fue encontrado', error)
+      }
+
+      return producto
     }
   },
   Mutation: {
@@ -34,8 +52,8 @@ const resolvers = {
 
       try {
         // guardar el usuario en la base de datos
-        const usuarioNuevo = new Usuario(input)
-        usuarioNuevo.save() // guardado
+        const usuario = new Usuario(input)
+        const usuarioNuevo = await usuario.save() // guardado
 
         return usuarioNuevo
 
@@ -62,6 +80,38 @@ const resolvers = {
       return {
         token: crearToken(usuarioExiste, process.env.SECRETA, '24h')
       }
+    },
+    nuevoProducto: async (_, { input }) => {
+      try {
+        // guardar el usuario en la base de datos
+        const producto = new Producto(input);
+        const productoNuevo = await producto.save(); // guardado
+
+        return productoNuevo
+      } catch (error) {
+        throw new Error('Error al agregar un nuevo prodcuto', error) 
+      }
+    },
+    actualizarProducto: async (_, { id, input }) => {
+      let producto = await Producto.findById(id)
+
+      if (!producto) {
+        throw new Error('El producto no fue encontrado', error)
+      }
+
+      producto = await Producto.findOneAndUpdate({ _id: id }, input, { new: true })
+      return producto
+    },
+    eliminarProducto: async (_, { id }) => {
+      let producto = await Producto.findById(id)
+
+      if (!producto) {
+        throw new Error('El producto no fue encontrado', error)
+      }
+
+      producto = await Producto.findOneAndDelete({ _id: id })
+
+      return "Producto eliminado correctamente"
     }
   }
 }
