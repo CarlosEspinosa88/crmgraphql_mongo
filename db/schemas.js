@@ -60,9 +60,14 @@ const typeDefs = gql`
     # Usuarios
     obtenerUsuario(token: String!): Usuario
 
-    #Productos
+    # Productos
     obtenerProductos: [Producto]
     obtenerProducto(id: ID!): Producto
+
+    # Clientes
+    obtenerClientes: [Cliente]
+    obtenerClientesVendedor: [Cliente]
+    obtenerCliente(id: ID!): Cliente
   }
 
   type Mutation {
@@ -76,7 +81,9 @@ const typeDefs = gql`
     eliminarProducto(id: ID!): String
 
     # Clientes
-    nuevoCliente(input: ClienteInput): Cliente 
+    nuevoCliente(input: ClienteInput): Cliente
+    actualizarCliente(id: ID!, input: ClienteInput): Cliente
+    eliminarCliente(id: ID!): String
   }
 `
 
