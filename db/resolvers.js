@@ -35,6 +35,35 @@ const resolvers = {
       }
 
       return producto
+    },
+    obtenerClientes: async () => {
+      try {
+        const clientes = await Cliente.find({})
+        return clientes
+      } catch (error) {
+        throw new Error('Error al cargar los clientes', error)
+      }
+    },
+    obtenerClientesVendedor: async (_, {}, ctx) => {
+      try {
+        const clientes = await Cliente.find({ vendedor: ctx.usuario.id.toString()})
+        return clientes
+      } catch (error) {
+        throw new Error('Error al cargar los clientes por vendedor', error)
+      }
+    },
+    obtenerCliente: async (_, { id }, ctx) => {
+      const cliente = await Cliente.findById(id)
+
+      if (!cliente) {
+        throw new Error('Cliente no encontrado')
+      }
+
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error('No tienes las credenciales')
+      }
+
+      return cliente
     }
   },
   Mutation: {
@@ -131,6 +160,37 @@ const resolvers = {
       } catch (error) {
         throw new Error('Error al crear un usuario nuevo')
       }
+    },
+    actualizarCliente: async (_, { id, input }, ctx) => {
+      let cliente = await Cliente.findById(id)
+
+      if (!cliente) { 
+        throw new Error('El cliente no existe')
+      }
+
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error('No tienes las credenciales')
+      }
+
+      cliente = await Cliente.findOneAndUpdate({ _id: id }, input , { new: true })
+
+      return cliente
+    },
+    eliminarCliente: async (_, { id }, ctx) => {
+      let cliente = await Cliente.findById(id)
+
+      if (!cliente) { 
+        throw new Error('El cliente no existe')
+      }
+
+      if (cliente.vendedor.toString() !== ctx.usuario.id) {
+        throw new Error('No tienes las credenciales')
+      }
+
+      cliente = await Cliente.findOneAndDelete({ _id: id })
+
+      return "Cliente eliminado correctamente"
+
     }
   }
 }
