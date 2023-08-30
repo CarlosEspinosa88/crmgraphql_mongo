@@ -8,6 +8,7 @@ require('dotenv').config({ path: '.variables.env' })
 conectarBD()
 
 const server = new ApolloServer({
+  introspection: true,
   typeDefs,
   resolvers,
   context: ({ req }) => {
