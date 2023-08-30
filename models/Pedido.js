@@ -10,12 +10,12 @@ const PedidoSchema = mongoose.Schema({
     require: true,
   },
   cliente: {
-    type: mongoose.Schema.Types.ObjectId ,
+    type: mongoose.Schema.Types.ObjectId,
     require: true,
     ref: 'Cliente'
   },
   vendedor: {
-    type: mongoose.Schema.Types.ObjectId ,
+    type: mongoose.Schema.Types.ObjectId,
     require: true,
     ref: 'Usuario'
   },
